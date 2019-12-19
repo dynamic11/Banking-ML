@@ -85,7 +85,7 @@ DEBUG = True
 PLOTS = True
 ```
 
-###Good references
+##Good references
 * <http://www.columbia.edu/~jc4133/ADA-Project.pdf>
 * <https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html>
 * <https://archive.ics.uci.edu/ml/datasets.php?format=&task=&att=&area=&numAtt=&numIns=greater1000&type=&sort=nameUp&view=table>
