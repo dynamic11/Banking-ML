@@ -2,8 +2,6 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import seaborn as sns
-from sklearn import preprocessing
-from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
@@ -51,7 +49,6 @@ X = data.drop('subscribed', axis=1)
 # Generator feature selectors to use for training
 selector = [
     "age",
-    "pdays",
     "campaign",
     "previous",
     "emp.var.rate",
@@ -87,13 +84,13 @@ X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # generate MLP with 1 hidden layer of 9 neurons (18input/2)
-mlp = MLPClassifier(hidden_layer_sizes=(9,),
+mlp = MLPClassifier(hidden_layer_sizes=(8,),
                     max_iter=500,
                     activation = 'relu',
                     solver='adam',
                     verbose=DEBUG,
                     early_stopping=True,
-                    validation_fraction=0.1,
+                    validation_fraction=0.2,
                     random_state=1)
 mlp.fit(X_train_scaled, y_train)
 
