@@ -2,6 +2,12 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import seaborn as sns
+from sklearn import preprocessing
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report,confusion_matrix
+
 
 DEBUG = True
 
@@ -36,7 +42,7 @@ if DEBUG:
     export_csv = data.to_csv (r'cleaned_input_data.csv', index = None, header=True)
 
 
-#break up intput and output data
+# break up intput and output data
 y = data['subscribed']
 X = data.drop('subscribed', axis=1)
 
@@ -63,28 +69,22 @@ selector = [
 
 
 # divide out the given training data into training (80%) and validation (20%)
-X_train, X_validate, y_train, y_validate = train_test_split(data[selector], data['subscribed'], test_size=0.3, random_state=42)
+X_train, X_validate, y_train, y_validate = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=42)
 
 if DEBUG:
     X_train.to_csv(r'X_train.csv', index=None, header=True)
 
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-# Fit the Training Data
-scaler.fit(X_train)
-X_train = scaler.transform(X_train)
-X_validate = scaler.transform(X_validate)
 
-if DEBUG:
-    data.to_csv(r'X_train_scaled.csv', index=None, header=True)
+# normalize the data
+min_max_scaler = preprocessing.MinMaxScaler()
+X_train_scaled = min_max_scaler.fit_transform(X_train)
+X_validate_scaled  = min_max_scaler.fit_transform(X_validate)
 
 
-from sklearn.neural_network import MLPClassifier
 mlp = MLPClassifier(hidden_layer_sizes=(17,10,1),max_iter=500, activation = 'relu',solver='adam',  verbose=DEBUG, random_state=1)
-mlp.fit(X_train, y_train)
+mlp.fit(X_train_scaled, y_train)
 
 
-import matplotlib.pyplot as plt
 plt.plot(mlp.loss_curve_,  label='Model Error vs Epoch')
 plt.title('Learning Loss Function')
 plt.xlabel('Loss')
@@ -92,23 +92,19 @@ plt.ylabel('Epoch')
 plt.savefig("output/accuracy_vs_epoch.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
 plt.close()
 
-
-predictions =mlp.predict(X_validate)
-from sklearn.metrics import classification_report,confusion_matrix
+predictions = mlp.predict(X_validate_scaled)
 cnf_matrix = confusion_matrix(y_validate,predictions)
 
-print(cnf_matrix);
+print(cnf_matrix)
 
 fig, ax = plt.subplots(1)
 ax = sns.heatmap(cnf_matrix, ax=ax, cmap=plt.cm.Greens, annot=True)
-#ax.set_xticklabels(abbreviation)
-#ax.set_yticklabels(abbreviation)
 plt.title('Confusion matrix of random forest predictions')
 plt.ylabel('True category')
 plt.xlabel('Predicted category')
 plt.savefig("output/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
 plt.close()
 
-from sklearn.metrics import accuracy_score
+
 score = accuracy_score(y_validate,predictions)
 print(score)
