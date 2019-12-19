@@ -6,10 +6,12 @@ from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 
-
+# enviroment booleans
 DEBUG = True
+PLOTS = True
 
 # read data form file CSV into pandas data structure
 data = pd.read_csv('data/bank-additional-full.csv', sep=';')
@@ -33,19 +35,20 @@ data['poutcome_code'] = LE.fit_transform(data['poutcome'])
 data['day_of_week_code'] = LE.fit_transform(data['day_of_week']) #maybe
 data['month_code'] = LE.fit_transform(data['month']) #maybe
 data['subscribed'] = LE.fit_transform(data['y'])
-# Drop columns
 
+# Drop redundant columns
 data=data.drop(['job', 'marital', 'education', 'housing', 'loan', 'contact', 'poutcome', \
                 'day_of_week', 'month', 'default', 'y'], axis=1)
 
 if DEBUG:
-    export_csv = data.to_csv (r'cleaned_input_data.csv', index = None, header=True)
+    export_csv = data.to_csv (r'cleaned_input_data.csv', index=None, header=True)
 
 
-# break up intput and output data
+# break up input and output data
 y = data['subscribed']
 X = data.drop('subscribed', axis=1)
 
+# Generator feature selectors to use for training
 selector = [
     "age",
     "pdays",
@@ -67,44 +70,59 @@ selector = [
     "month_code",
 ]
 
-
 # divide out the given training data into training (80%) and validation (20%)
-X_train, X_validate, y_train, y_validate = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=42)
 
 if DEBUG:
     X_train.to_csv(r'X_train.csv', index=None, header=True)
+    X_test.to_csv(r'X_validate.csv', index=None, header=True)
 
 
-# normalize the data
-min_max_scaler = preprocessing.MinMaxScaler()
-X_train_scaled = min_max_scaler.fit_transform(X_train)
-X_validate_scaled  = min_max_scaler.fit_transform(X_validate)
+# scale the data:
+# transforms the data to center it by removing the mean value of each feature, then scale it by dividing non-constant
+# features by their standard deviation.
+scaler = StandardScaler()
+scaler.fit(X_train)
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-
-mlp = MLPClassifier(hidden_layer_sizes=(17,10,1),max_iter=500, activation = 'relu',solver='adam',  verbose=DEBUG, random_state=1)
+# generate MLP with 1 hidden layer of 9 neurons (18input/2)
+mlp = MLPClassifier(hidden_layer_sizes=(9,),
+                    max_iter=500,
+                    activation = 'relu',
+                    solver='adam',
+                    verbose=DEBUG,
+                    early_stopping=True,
+                    validation_fraction=0.1,
+                    random_state=1)
 mlp.fit(X_train_scaled, y_train)
 
+if PLOTS:
+    # plot the error curve
+    plt.plot(mlp.loss_curve_,  label='Model Error vs Epoch')
+    plt.title('Learning Loss Function')
+    plt.xlabel('Loss')
+    plt.ylabel('Epoch')
+    plt.savefig("output/accuracy_vs_epoch.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
+    plt.close()
 
-plt.plot(mlp.loss_curve_,  label='Model Error vs Epoch')
-plt.title('Learning Loss Function')
-plt.xlabel('Loss')
-plt.ylabel('Epoch')
-plt.savefig("output/accuracy_vs_epoch.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
-plt.close()
+# run the test data to see validity of model
+predictions = mlp.predict(X_test_scaled)
+cnf_matrix = confusion_matrix(y_test, predictions)
 
-predictions = mlp.predict(X_validate_scaled)
-cnf_matrix = confusion_matrix(y_validate,predictions)
-
+print("***************************************")
 print(cnf_matrix)
+print("***************************************")
 
-fig, ax = plt.subplots(1)
-ax = sns.heatmap(cnf_matrix, ax=ax, cmap=plt.cm.Greens, annot=True)
-plt.title('Confusion matrix of random forest predictions')
-plt.ylabel('True category')
-plt.xlabel('Predicted category')
-plt.savefig("output/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
-plt.close()
+if PLOTS:
+    # plot the Confusion matrix
+    fig, ax = plt.subplots(1)
+    ax = sns.heatmap(cnf_matrix, ax=ax, cmap=plt.cm.Greens, annot=True)
+    plt.title('Confusion matrix of random forest predictions')
+    plt.ylabel('True category')
+    plt.xlabel('Predicted category')
+    plt.savefig("output/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
+    plt.close()
 
-
-score = accuracy_score(y_validate,predictions)
-print(score)
+print("Training set score: %f" % mlp.score(X_train_scaled, y_train))
+print("Test set score: %f" % mlp.score(X_test_scaled, y_test))
