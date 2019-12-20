@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error
 
 # enviroment booleans
 DEBUG = True
@@ -41,11 +42,6 @@ data=data.drop(['job', 'marital', 'education', 'housing', 'loan', 'contact', 'po
 if DEBUG:
     export_csv = data.to_csv (r'cleaned_input_data.csv', index=None, header=True)
 
-
-# break up input and output data
-y = data['subscribed']
-X = data.drop('subscribed', axis=1)
-
 # Generator feature selectors to use for training
 selector = [
     "age",
@@ -72,7 +68,7 @@ X_train, X_test, y_train, y_test = train_test_split(data[selector], data['subscr
 
 if DEBUG:
     X_train.to_csv(r'X_train.csv', index=None, header=True)
-    X_test.to_csv(r'X_validate.csv', index=None, header=True)
+    X_test.to_csv(r'X_test.csv', index=None, header=True)
 
 
 # scale the data:
@@ -123,3 +119,5 @@ if PLOTS:
 
 print("Training set score: %f" % mlp.score(X_train_scaled, y_train))
 print("Test set score: %f" % mlp.score(X_test_scaled, y_test))
+
+print(mean_squared_error(y_test, predictions))
