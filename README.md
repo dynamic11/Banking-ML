@@ -33,6 +33,7 @@ Input_Features = [
     "age",
     "campaign",
     "previous",
+    "duration",
     "emp.var.rate",
     "cons.price.idx",
     "cons.conf.idx",
