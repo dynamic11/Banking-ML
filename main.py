@@ -7,10 +7,16 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+import random
 
 # enviroment booleans
 DEBUG = True
 PLOTS = True
+SEED = 805
+#SEED = random.randint(0, 1000)
+
+print("=============== STARTING ===============")
+print("Debug:%r Plots:%r Seed:%d \n" % (DEBUG,  PLOTS, SEED))
 
 # read data form file CSV into pandas data structure
 data = pd.read_csv('data/bank-additional-full.csv', sep=';')
@@ -47,6 +53,7 @@ selector = [
     "age",
     "campaign",
     "previous",
+    "duration",
     "emp.var.rate",
     "cons.price.idx",
     "cons.conf.idx",
@@ -64,7 +71,7 @@ selector = [
 ]
 
 # divide out the given training data into training (80%) and validation (20%)
-X_train, X_test, y_train, y_test = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=SEED)
 
 if DEBUG:
     X_train.to_csv(r'X_train.csv', index=None, header=True)
@@ -87,7 +94,7 @@ mlp = MLPClassifier(hidden_layer_sizes=(8,),
                     verbose=DEBUG,
                     early_stopping=True,
                     validation_fraction=0.2,
-                    random_state=1)
+                    random_state=SEED)
 mlp.fit(X_train_scaled, y_train)
 
 if PLOTS:
