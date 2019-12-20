@@ -67,7 +67,7 @@ Total number of samples in data: 41,188
 
 ## The MLP Model
 We are using a 3 layer MLP model using:
-* 17 neurons in input layer
+* 18 neurons in input layer
 * 8 neurons in hidden layer (ReLU activation function)
 * 1 neuron in output layer
 
@@ -78,11 +78,14 @@ We use the adam solver
 ### How To Run
 To run this code run main.py
 
-There are to parameters that you can use to *generated output plots* and *debug console logs*
+There are two parameters that you can use to *generated output plots* and *debug console logs*.
 
+There is also SEED parameter to define the seeds for the sedu random generators int he code. You can set it as a 
+constant to ensure consistency between runs.
  ```python
 DEBUG = True
 PLOTS = True
+SEED = 805
 ```
 
 ## Good references

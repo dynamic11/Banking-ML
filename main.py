@@ -21,13 +21,6 @@ print("Debug:%r Plots:%r Seed:%d \n" % (DEBUG,  PLOTS, SEED))
 # read data form file CSV into pandas data structure
 data = pd.read_csv('data/bank-additional-full.csv', sep=';')
 
-# This attribute highly affects the output target (e.g., if duration=0 then y=no). Yet, the duration is not known
-# before a call is performed. Also, after the end of the call, y is obviously known. Thus, this input should only be
-# included for benchmark purposes and should be discarded if the intention is to have a realistic predictive model.
-
-# drop pday becasue data seems to be inconsistent (ex. pdays says person has not been contacted but previous contacts
-# count is greater than 1)
-
 LE = LabelEncoder()
 #Work on the Categorical Values
 data['job_code'] = LE.fit_transform(data['job'])
@@ -42,8 +35,10 @@ data['month_code'] = LE.fit_transform(data['month']) #maybe
 data['subscribed'] = LE.fit_transform(data['y'])
 
 # Drop redundant columns
+# drop pday becasue data seems to be inconsistent (ex. pdays says person has not been contacted but previous contacts
+# count is greater than 1)
 data=data.drop(['job', 'marital', 'education', 'housing', 'loan', 'contact', 'poutcome', \
-                'day_of_week', 'month', 'default', 'y'], axis=1)
+                'day_of_week', 'month', 'default', 'pdays', 'y'], axis=1)
 
 if DEBUG:
     export_csv = data.to_csv (r'cleaned_input_data.csv', index=None, header=True)
