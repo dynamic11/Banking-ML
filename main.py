@@ -98,7 +98,7 @@ if PLOTS:
     plt.title('Learning Loss Function')
     plt.xlabel('Loss')
     plt.ylabel('Epoch')
-    plt.savefig("output/accuracy_vs_epoch.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
+    plt.savefig("output/wth_encoding/accuracy_vs_epoch.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
     plt.close()
 
 # run the test data to see validity of model
@@ -116,7 +116,7 @@ if PLOTS:
     plt.title('Confusion matrix of random forest predictions')
     plt.ylabel('True category')
     plt.xlabel('Predicted category')
-    plt.savefig("output/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
+    plt.savefig("output/wth_encoding/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
     plt.close()
 
 print("Training set score: %f" % mlp.score(X_train_scaled, y_train))
