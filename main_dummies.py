@@ -13,7 +13,7 @@ import random
 DEBUG = True
 PLOTS = True
 SEED = 805
-#SEED = random.randint(0, 1000)
+SEED = random.randint(0, 1000)
 
 print("=============== STARTING ===============")
 print("Debug:%r Plots:%r Seed:%d \n" % (DEBUG,  PLOTS, SEED))
@@ -48,6 +48,7 @@ selector =list(data.columns.values)
 del selector[-1]
 if DEBUG:
     print(selector)
+    print(len(selector))
 
 
 # divide out the given training data into training (80%) and validation (20%)

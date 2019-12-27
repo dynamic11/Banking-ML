@@ -7,12 +7,14 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import mean_absolute_error
 import random
 
 # enviroment booleans
 DEBUG = True
 PLOTS = True
-SEED = 805
+SEED = 466
 #SEED = random.randint(0, 1000)
 
 print("=============== STARTING ===============")
@@ -82,14 +84,19 @@ X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # generate MLP with 1 hidden layer of 9 neurons (18input/2)
-mlp = MLPClassifier(hidden_layer_sizes=(8,),
+mlp = MLPClassifier(hidden_layer_sizes=(9,),
                     max_iter=500,
-                    activation = 'relu',
+                    activation = 'logistic',
                     solver='adam',
                     verbose=DEBUG,
                     early_stopping=True,
                     validation_fraction=0.2,
-                    random_state=SEED)
+                    tol=0.0001,
+                    learning_rate_init=0.001,
+                    random_state=SEED
+                    )
+
+
 mlp.fit(X_train_scaled, y_train)
 
 if PLOTS:
@@ -119,7 +126,10 @@ if PLOTS:
     plt.savefig("output/wth_encoding/Confusion_Matrix.png", bbox_inches='tight', dpi=200, pad_inches=0.5)
     plt.close()
 
+print("Training error: %f" % mlp.loss_curve_[-1])
 print("Training set score: %f" % mlp.score(X_train_scaled, y_train))
 print("Test set score: %f" % mlp.score(X_test_scaled, y_test))
+print(accuracy_score(y_test, predictions))
 
-print(mean_squared_error(y_test, predictions))
+print("MSE: %f" % mean_squared_error(y_test, predictions))
+print("MAE: %f" % mean_absolute_error(y_test, predictions))
