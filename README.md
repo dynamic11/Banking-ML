@@ -81,12 +81,12 @@ To run this code run main.py
 
 There are two parameters that you can use to *generated output plots* and *debug console logs*.
 
-There is also SEED parameter to define the seeds for the sedu random generators int he code. You can set it as a 
+There is also SEED parameter to define the seeds for the sudo random generators in the code. You can set it as a 
 constant to ensure consistency between runs.
  ```python
 DEBUG = True
 PLOTS = True
-SEED = 805
+SEED = 466
 ```
 
 ## Bonus: experiment with dummy variables
