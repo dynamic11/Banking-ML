@@ -69,7 +69,7 @@ scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# generate MLP with 1 hidden layer of 9 neurons (18input/2)
+# generate MLP with 1 hidden layer of 40 neurons
 mlp = MLPClassifier(hidden_layer_sizes=(40,),
                     max_iter=500,
                     activation = 'relu',

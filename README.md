@@ -69,7 +69,7 @@ Total number of samples in data: 41,188
 ## The MLP Model
 We are using a 3 layer MLP model using:
 * 18 neurons in input layer
-* 8 neurons in hidden layer (ReLU activation function)
+* 9 neurons in hidden layer (Sigmoid activation function)
 * 1 neuron in output layer
 
 We use the adam solver 
@@ -88,6 +88,16 @@ DEBUG = True
 PLOTS = True
 SEED = 805
 ```
+
+## Bonus: experiment with dummy variables
+
+In the project you will find a file called `main_dummies.py`.
+
+This file runs a similar experiment as the `main.py` file but instead of numerical encoding categorical data it generates
+dummy variables.
+
+This generates a total of 62 input features vs. 18 used in the original experiment.
+
 
 ## Good references
 * <http://www.columbia.edu/~jc4133/ADA-Project.pdf>
