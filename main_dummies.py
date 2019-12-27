@@ -7,6 +7,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 import random
 
 # enviroment booleans
@@ -46,10 +47,11 @@ if DEBUG:
 selector =list(data.columns.values)
 # deleted "subscribed" form list of selector
 del selector[-1]
+
+# print the name of selected features
 if DEBUG:
     print(selector)
     print(len(selector))
-
 
 # divide out the given training data into training (80%) and validation (20%)
 X_train, X_test, y_train, y_test = train_test_split(data[selector], data['subscribed'], test_size=0.2, random_state=SEED)
@@ -108,4 +110,5 @@ if PLOTS:
 print("Training set score: %f" % mlp.score(X_train_scaled, y_train))
 print("Test set score: %f" % mlp.score(X_test_scaled, y_test))
 
-print(mean_squared_error(y_test, predictions))
+print("MSE: %f" % mean_squared_error(y_test, predictions))
+print("MAE: %f" % mean_absolute_error(y_test, predictions))
