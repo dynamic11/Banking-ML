@@ -77,7 +77,7 @@ We use the adam solver
 ## The Code
 
 ### How To Run
-To run this code run main.py
+To run this code run `main_encoding.py`.
 
 There are two parameters that you can use to *generated output plots* and *debug console logs*.
 
@@ -88,8 +88,24 @@ DEBUG = True
 PLOTS = True
 SEED = 466
 ```
+## Bonus #1: experiment with dummy variables
 
-## Bonus: experiment with dummy variables
+In the project you will find a file called `main_encoding_ovrsampling.py`.
+
+The data set provided to us contains more negative outcomes (0) than positive outcomes (1) as seen in the following figure.
+This could result in a bias in our model because it has more sample of one kind during training. Ideally, we should have 
+more results with positive outcome but for the purposes of this project we can use oversampling to generate additional sample 
+with a positive (1) outcome.
+
+<img src="/output/wth_encoding_ovrsampling/Count_Outcomes_orig.png" width="300px">
+
+The method used for oversampling is SMOTE: Synthetic Minority Over-sampling Technique. this method generates synthetic 
+data points by taking the vector between k neighbors, and the current data point. It multiplies this vector by a random 
+number x (between 1 and 0). It then adds this to the current data point to create the new, synthetic data point.
+
+This change results in a significant improvement in accuracy (~96%).
+
+## Bonus #2: experiment with dummy variables
 
 In the project you will find a file called `main_dummies.py`.
 
@@ -97,6 +113,8 @@ This file runs a similar experiment as the `main.py` file but instead of numeric
 dummy variables.
 
 This generates a total of 62 input features vs. 18 used in the original experiment.
+
+
 
 
 ## Good references
