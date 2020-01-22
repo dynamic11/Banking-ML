@@ -97,7 +97,7 @@ This could result in a bias in our model because it has more sample of one kind 
 more results with positive outcome but for the purposes of this project we can use oversampling to generate additional sample 
 with a positive (1) outcome.
 
-<img src="/output/wth_encoding_ovrsampling/Count_Outcomes_orig.png" width="300px">
+<img src="/output/wth_encoding_ovrsampling/Count_Outcomes_orig.png" width="400px">
 
 The method used for oversampling is SMOTE: Synthetic Minority Over-sampling Technique. this method generates synthetic 
 data points by taking the vector between k neighbors, and the current data point. It multiplies this vector by a random 
